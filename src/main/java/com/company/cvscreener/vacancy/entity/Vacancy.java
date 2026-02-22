@@ -50,5 +50,9 @@ public class Vacancy {
     @Column(name = "closed_at", nullable = false)
     private LocalDateTime closedAt;
 
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = LocalDateTime.now();
+    }
 
 }
