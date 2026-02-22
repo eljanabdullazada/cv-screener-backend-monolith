@@ -1,10 +1,11 @@
 package com.company.cvscreener.auth.domain;
 
-import com.mongodb.lang.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -36,6 +37,8 @@ public class User {
 
     @Column(nullable = false)
     private boolean enabled = true;
+
+    private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
