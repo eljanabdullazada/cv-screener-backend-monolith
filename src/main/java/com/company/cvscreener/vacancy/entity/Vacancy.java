@@ -35,11 +35,9 @@ public class Vacancy {
     @Column(columnDefinition = "TEXT")
     private String requirements;
 
-    @Column(nullable = false)
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
-    private User created_by;
+    private User createdBy;
 
     @Column(nullable = false)
     private boolean active = true;
@@ -47,7 +45,7 @@ public class Vacancy {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "closed_at", nullable = false)
+    @Column(name = "closed_at")
     private LocalDateTime closedAt;
 
     @PrePersist
