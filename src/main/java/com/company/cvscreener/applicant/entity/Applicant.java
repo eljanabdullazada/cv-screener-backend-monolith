@@ -63,6 +63,9 @@ public class Applicant {
     @PrePersist
     protected void onApply() {
         this.appliedAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = ApplicationStatus.NEW;
+        }
     }
 
 }
