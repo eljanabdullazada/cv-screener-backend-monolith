@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: cvscreener
+
+jwt:
+  secret: JIvkmw2OFN7h7i8/j5lGU4EyYU2lham9DgBrcVIjOHM=
+  expiration: 900000 # 15 minutes in milliseconds
