@@ -10,7 +10,6 @@ import java.util.UUID;
 public interface VacancyRepository extends JpaRepository<Vacancy, UUID> {
 
     Optional<Vacancy> findByIdAndActiveTrue(UUID id);
-
     List<Vacancy> findAllByActiveTrue();
 
 }
