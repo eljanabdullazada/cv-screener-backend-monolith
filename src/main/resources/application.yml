@@ -1,7 +1,21 @@
 spring:
   application:
     name: cvscreener
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cvscreener
+    username: postgres
+    password: 12345678
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  mongodb:
+    uri: mongodb://localhost:27017/cvscreener
+
 
 jwt:
   secret: JIvkmw2OFN7h7i8/j5lGU4EyYU2lham9DgBrcVIjOHM=
   expiration: 900000 # 15 minutes in milliseconds
+
