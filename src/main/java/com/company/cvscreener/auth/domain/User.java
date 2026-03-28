@@ -33,10 +33,10 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String password; // I will store this as BCrypt hash
+    private String password;
 
     @Column(nullable = false)
-    private boolean enabled = true;
+    private Boolean enabled = true;
 
     private LocalDateTime createdAt;
 
@@ -58,6 +58,11 @@ public class User {
     @Override
     public int hashCode(){
         return getClass().hashCode();
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = LocalDateTime.now();
     }
 
 }

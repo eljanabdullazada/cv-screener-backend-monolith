@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface VacancyService{
-    Vacancy create(Vacancy vacancy);
+    Vacancy create(Vacancy vacancy, String username);
     void delete(UUID id);
     List<Vacancy> findAll();
     Vacancy findById(UUID id);

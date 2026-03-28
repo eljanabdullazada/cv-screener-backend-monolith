@@ -69,7 +69,7 @@ public class JwtService {
     // Validate Token
     // ===============================
 
-    public boolean isTokenValid(String token, String username) {
+    public Boolean isTokenValid(String token, String username) {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
     }
@@ -78,7 +78,7 @@ public class JwtService {
     // Expiration Check
     // ===============================
 
-    private boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration)
                 .before(new Date());
     }

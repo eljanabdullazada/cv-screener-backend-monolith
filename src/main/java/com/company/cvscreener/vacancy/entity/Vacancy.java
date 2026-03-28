@@ -1,6 +1,7 @@
 package com.company.cvscreener.vacancy.entity;
 
 import com.company.cvscreener.auth.domain.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,10 +38,12 @@ public class Vacancy {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User createdBy;
 
     @Column(nullable = false)
-    private boolean active = true;
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Boolean active = true;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

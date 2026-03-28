@@ -43,25 +43,52 @@ public class AuthenticationService {
     // REGISTER CANDIDATE
     // ==========================
 
-    public String registerCandidate(String username, String password) {
+    public String registerCandidate(String username, String email, String password) {
 
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new IllegalArgumentException("Username already exists.");
         }
 
         Role candidateRole = roleRepository
-                .findByName("ROLE_CANDIDATE")
-                .orElseThrow();
+                .findByName("CANDIDATE")
+                .orElseThrow(() -> new RuntimeException("Error: Role 'CANDIDATE' not found in database. Check your 'roles' table!"));
 
         User user = User.builder()
                 .username(username)
+                .email(email)
                 .password(passwordEncoder.encode(password))
-                .enabled(true)
+//                .enabled(true)
                 .roles(Set.of(candidateRole))
                 .build();
 
         userRepository.save(user);
 
         return jwtService.generateToken(user.getUsername());
+    }
+
+    // ==========================
+    // REGISTER HR
+    // ==========================
+
+    public String registerHr(String username, String email, String password){
+        if(userRepository.existsByUsername(username)){
+            throw new IllegalArgumentException("User already exists.");
+        }
+
+        Role hrRole = roleRepository
+                .findByName("HR")
+                .orElseThrow(() -> new RuntimeException("Error: Role 'HR' not found in database. Check your 'roles' table!"));
+
+        User user = User.builder()
+                .username(username)
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .enabled(true)
+                .roles(Set.of(hrRole))
+                .build();
+
+        userRepository.save(user);
+
+        return jwtService.generateToken((user.getUsername()));
     }
 }

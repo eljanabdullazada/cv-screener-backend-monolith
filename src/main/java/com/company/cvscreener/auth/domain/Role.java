@@ -17,6 +17,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Version
+    private Long version;
+
     @Column(nullable = false, unique = true)
     private String name;  // this will be ROLE_HR  AND ROLE_CANDIDATE
 

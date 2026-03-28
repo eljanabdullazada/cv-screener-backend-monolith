@@ -27,12 +27,20 @@ public class AuthController {
 
     @PostMapping("/register")
     public AuthResponse register(@RequestBody RegisterRequest request) {
-
-        String token = authenticationService.registerCandidate(
-                request.username(),
-                request.password()
-        );
-
+        String token;
+        if(request.username() == "CANDIDATE") {
+            token = authenticationService.registerCandidate(
+                    request.username(),
+                    request.email(),
+                    request.password()
+            );
+        } else{
+            token = authenticationService.registerHr(
+                    request.username(),
+                    request.email(),
+                    request.password()
+            );
+        }
         return new AuthResponse(token);
     }
 }

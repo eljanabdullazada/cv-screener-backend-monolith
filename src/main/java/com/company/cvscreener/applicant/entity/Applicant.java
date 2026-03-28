@@ -58,7 +58,7 @@ public class Applicant {
     private LocalDateTime appliedAt;
 
     @Column(nullable = false)
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
     @PrePersist
     protected void onApply() {
