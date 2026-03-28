@@ -1,13 +1,12 @@
 package com.company.cvscreener.vacancy.controller;
 
-import com.company.cvscreener.auth.domain.User;
-import com.company.cvscreener.auth.repository.UserRepository;
+import com.company.cvscreener.applicant.entity.Applicant;
+import com.company.cvscreener.applicant.service.ApplicantService;
 import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -20,16 +19,13 @@ import java.util.UUID;
 public class VacancyController {
 
     private final VacancyService vacancyService;
-    private final UserRepository userRepository;
+    private final ApplicantService applicantService;
 
     // HR ONLY
     @PreAuthorize("hasRole('HR')")
     @PostMapping
     public ResponseEntity<Vacancy> create(@RequestBody Vacancy vacancy, Principal principal) {
-        User user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        vacancy.setCreatedBy(user);
-        Vacancy saved = vacancyService.create(vacancy, user.getUsername());
+        Vacancy saved = vacancyService.create(vacancy, principal.getName());
         return ResponseEntity.ok(saved);
     }
 
@@ -44,5 +40,20 @@ public class VacancyController {
     @GetMapping
     public List<Vacancy> findAll() {
         return vacancyService.findAll();
+    }
+
+    // ANY AUTHENTICATED USER
+    @GetMapping("/{id}")
+    public ResponseEntity<Vacancy> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(vacancyService.findById(id));
+    }
+
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @PostMapping("/{id}/apply")
+    public ResponseEntity<Applicant> apply(
+            @PathVariable UUID id,
+            Principal principal
+    ) {
+        return ResponseEntity.ok(applicantService.apply(id, principal.getName()));
     }
 }

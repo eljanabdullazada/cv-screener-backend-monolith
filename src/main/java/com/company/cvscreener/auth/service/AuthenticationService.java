@@ -57,7 +57,7 @@ public class AuthenticationService {
                 .username(username)
                 .email(email)
                 .password(passwordEncoder.encode(password))
-//                .enabled(true)
+                .enabled(true)
                 .roles(Set.of(candidateRole))
                 .build();
 

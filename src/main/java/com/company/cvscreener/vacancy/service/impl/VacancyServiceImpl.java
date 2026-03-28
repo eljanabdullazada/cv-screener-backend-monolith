@@ -34,6 +34,7 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     public Vacancy findById(UUID id){
-        return null;
+        return vacancyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vacancy not found"));
     }
 }
