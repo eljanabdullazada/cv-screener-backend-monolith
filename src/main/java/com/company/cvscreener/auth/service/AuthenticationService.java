@@ -11,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,10 +42,10 @@ public class AuthenticationService {
     }
 
     // ==========================
-    // REGISTER CANDIDATE
+    // REGISTER
     // ==========================
 
-    public String registerCandidate(String username, String email, String password) {
+    public String register(String username, String email, String password) {
 
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username already exists.");
@@ -51,7 +53,7 @@ public class AuthenticationService {
 
         Role candidateRole = roleRepository
                 .findByName("CANDIDATE")
-                .orElseThrow(() -> new RuntimeException("Error: Role 'CANDIDATE' not found in database. Check your 'roles' table!"));
+                .orElseThrow(() -> new RuntimeException("Error: Role 'CANDIDATE' not found in database."));
 
         User user = User.builder()
                 .username(username)
@@ -67,28 +69,19 @@ public class AuthenticationService {
     }
 
     // ==========================
-    // REGISTER HR
+    // UPDATE ROLE
     // ==========================
 
-    public String registerHr(String username, String email, String password){
-        if(userRepository.existsByUsername(username)){
-            throw new IllegalArgumentException("User already exists.");
-        }
+    public void updateUserRole(String username, String roleName) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Error: User not found."));
 
-        Role hrRole = roleRepository
-                .findByName("HR")
-                .orElseThrow(() -> new RuntimeException("Error: Role 'HR' not found in database. Check your 'roles' table!"));
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Error: Role '" + roleName + "' not found."));
 
-        User user = User.builder()
-                .username(username)
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .enabled(true)
-                .roles(Set.of(hrRole))
-                .build();
+//        user.setRoles(Set.of(role)); now using this because it does not allow editing the role due to being immutable
+        user.setRoles(new HashSet<>(List.of(role)));
 
         userRepository.save(user);
-
-        return jwtService.generateToken((user.getUsername()));
     }
 }

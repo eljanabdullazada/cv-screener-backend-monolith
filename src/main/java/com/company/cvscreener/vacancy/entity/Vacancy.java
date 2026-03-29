@@ -38,7 +38,6 @@ public class Vacancy {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User createdBy;
 
     @Column(nullable = false)

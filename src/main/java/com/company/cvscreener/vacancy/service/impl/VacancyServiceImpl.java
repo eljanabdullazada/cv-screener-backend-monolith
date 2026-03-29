@@ -6,6 +6,7 @@ import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.repository.VacancyRepository;
 import com.company.cvscreener.vacancy.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class VacancyServiceImpl implements VacancyService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         vacancy.setCreatedBy(user);
+        vacancy.setActive(true);
         return vacancyRepository.save(vacancy);
     }
 
@@ -34,7 +36,7 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     public Vacancy findById(UUID id){
-        return vacancyRepository.findById(id)
+        return vacancyRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new RuntimeException("Vacancy not found"));
     }
 }
