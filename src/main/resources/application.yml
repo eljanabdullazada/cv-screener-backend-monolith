@@ -1,6 +1,7 @@
 spring:
   application:
     name: cvscreener
+
   datasource:
     url: jdbc:postgresql://localhost:5432/cvscreener
     username: postgres
@@ -11,11 +12,11 @@ spring:
       ddl-auto: update
     show-sql: true
 
-  mongodb:
-    uri: mongodb://localhost:27017/cvscreener
-
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/cvscreener
+      uuid-representation: standard
 
 jwt:
   secret: JIvkmw2OFN7h7i8/j5lGU4EyYU2lham9DgBrcVIjOHM=
-  expiration: 90000000 # 15 minutes in milliseconds
-
+  expiration: 900000000
