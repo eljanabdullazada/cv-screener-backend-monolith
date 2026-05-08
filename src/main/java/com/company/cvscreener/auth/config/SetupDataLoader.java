@@ -1,12 +1,17 @@
 package com.company.cvscreener.auth.config;
 
 import com.company.cvscreener.auth.domain.Role;
+import com.company.cvscreener.auth.domain.User;
 import com.company.cvscreener.auth.repository.RoleRepository;
+import com.company.cvscreener.auth.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -14,12 +19,15 @@ import java.util.UUID;
 public class SetupDataLoader implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void run(String... args) {
         createRoleIfNotFound("CANDIDATE");
         createRoleIfNotFound("HR");
+        createHrIfNotFound("MGR_HR"); // Manually Given Role HR
     }
 
     private void createRoleIfNotFound(String name) {
@@ -32,6 +40,23 @@ public class SetupDataLoader implements CommandLineRunner {
                     System.out.println("Created Role: " + name);
                 }
         );
+    }
+
+    private void createHrIfNotFound(String name) {
+        if (!userRepository.existsByUsername(name)) {
+
+            Role hrRole = roleRepository.findByName("HR").orElseThrow();
+
+            User hrUser = User.builder()
+                    .username(name)
+                    .email("mgr_hr@company.com")
+                    .password(passwordEncoder.encode("mgr_hr_password"))
+                    .enabled(true)
+                    .roles(Set.of(hrRole))
+                    .build();
+
+            userRepository.save(hrUser);
+        }
     }
 
 //    private void createRoleIfNotFound(String name) {
