@@ -2,6 +2,8 @@ package com.company.cvscreener.vacancy.controller;
 
 import com.company.cvscreener.applicant.entity.Applicant;
 import com.company.cvscreener.applicant.service.ApplicantService;
+import com.company.cvscreener.vacancy.dto.VacancyRequestDTO;
+import com.company.cvscreener.vacancy.dto.VacancyResponseDTO;
 import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,8 @@ public class VacancyController {
     // HR ONLY
     @PreAuthorize("hasRole('HR')")
     @PostMapping
-    public ResponseEntity<Vacancy> create(@RequestBody Vacancy vacancy, Principal principal) {
-        Vacancy saved = vacancyService.create(vacancy, principal.getName());
+    public ResponseEntity<VacancyResponseDTO> create(@RequestBody VacancyRequestDTO vacancy) {
+        VacancyResponseDTO saved = vacancyService.create(vacancy);
         return ResponseEntity.ok(saved);
     }
 
