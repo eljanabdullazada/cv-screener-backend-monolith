@@ -41,6 +41,7 @@ public class Vacancy {
     private User createdBy;
 
     @Column(nullable = false)
+    @Builder.Default
 //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Boolean active = true;
 

@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,15 @@ public class VacancyServiceImpl implements VacancyService {
     private final UserRepository userRepository;
 
     public VacancyResponseDTO create(VacancyRequestDTO dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Value of the dto cannot be null.");
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            throw new IllegalArgumentException("User must be authenticated to create a new Vacancy.");
+        }
+
         String hrUsername = authentication.getName();
 
         User user = userRepository.findByUsername(hrUsername)
@@ -41,8 +50,15 @@ public class VacancyServiceImpl implements VacancyService {
         vacancyRepository.deleteById(id);
     }
 
-    public List<Vacancy> findAll() {
-        return vacancyRepository.findAll();
+    public List<VacancyResponseDTO> findAll() {
+        List <Vacancy> vacancies = vacancyRepository.findAll();
+
+        List<VacancyResponseDTO> dtoList = new ArrayList<>();
+
+        for (Vacancy vacancy : vacancies) {
+            dtoList.add(toResponseDto(vacancy));
+        }
+        return dtoList;
     }
 
     public Vacancy findById(UUID id){

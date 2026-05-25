@@ -6,6 +6,7 @@ import com.company.cvscreener.vacancy.dto.VacancyRequestDTO;
 import com.company.cvscreener.vacancy.dto.VacancyResponseDTO;
 import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.service.VacancyService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +27,7 @@ public class VacancyController {
     // HR ONLY
     @PreAuthorize("hasRole('HR')")
     @PostMapping
-    public ResponseEntity<VacancyResponseDTO> create(@RequestBody VacancyRequestDTO vacancy) {
+    public ResponseEntity<VacancyResponseDTO> create(@RequestBody @NotNull VacancyRequestDTO vacancy) {
         VacancyResponseDTO saved = vacancyService.create(vacancy);
         return ResponseEntity.ok(saved);
     }
@@ -40,7 +41,7 @@ public class VacancyController {
 
     // ANY AUTHENTICATED USER
     @GetMapping
-    public List<Vacancy> findAll() {
+    public List<VacancyResponseDTO> findAll() {
         return vacancyService.findAll();
     }
 

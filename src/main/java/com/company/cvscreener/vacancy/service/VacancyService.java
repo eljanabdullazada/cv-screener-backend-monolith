@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface VacancyService{
     VacancyResponseDTO create(VacancyRequestDTO dto);
     void delete(UUID id);
-    List<Vacancy> findAll();
+    List<VacancyResponseDTO> findAll();
     Vacancy findById(UUID id);
 }

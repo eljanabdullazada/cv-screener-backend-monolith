@@ -1,7 +1,5 @@
 package com.company.cvscreener.vacancy.dto;
 
-import com.company.cvscreener.auth.domain.User;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,7 +8,7 @@ public record VacancyResponseDTO(
         String title,
         String description,
         String requirements,
-        User createdByUsername,
+        UserSummaryDTO createdBy,
         Boolean active,
         LocalDateTime createdAt,
         LocalDateTime closedAt
