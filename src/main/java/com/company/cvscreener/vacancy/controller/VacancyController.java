@@ -1,5 +1,6 @@
 package com.company.cvscreener.vacancy.controller;
 
+import com.company.cvscreener.applicant.dto.ApplicantResponseDTO;
 import com.company.cvscreener.applicant.entity.Applicant;
 import com.company.cvscreener.applicant.service.ApplicantService;
 import com.company.cvscreener.vacancy.dto.VacancyRequestDTO;
@@ -53,7 +54,7 @@ public class VacancyController {
 
     @PreAuthorize("hasRole('CANDIDATE')")
     @PostMapping("/{id}/apply")
-    public ResponseEntity<Applicant> apply(
+    public ResponseEntity<ApplicantResponseDTO> apply(
             @PathVariable UUID id,
             Principal principal
     ) {

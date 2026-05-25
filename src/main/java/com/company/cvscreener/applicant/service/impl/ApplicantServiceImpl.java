@@ -1,5 +1,6 @@
 package com.company.cvscreener.applicant.service.impl;
 
+import com.company.cvscreener.applicant.dto.ApplicantResponseDTO;
 import com.company.cvscreener.applicant.entity.Applicant;
 import com.company.cvscreener.applicant.entity.ApplicationStatus;
 import com.company.cvscreener.applicant.repository.ApplicantRepository;
@@ -8,6 +9,7 @@ import com.company.cvscreener.auth.domain.User;
 import com.company.cvscreener.auth.repository.UserRepository;
 import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.repository.VacancyRepository;
+import com.company.cvscreener.applicant.mapper.ApplicantMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     @Transactional
-    public Applicant apply(UUID vacancyId, String username) {
+    public ApplicantResponseDTO apply(UUID vacancyId, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -44,10 +46,9 @@ public class ApplicantServiceImpl implements ApplicantService {
         Applicant applicant = new Applicant();
         applicant.setUser(user);
         applicant.setVacancy(vacancy);
-        applicant.setStatus(ApplicationStatus.NEW);
-        applicant.setAppliedAt(LocalDateTime.now());
         applicant.setDeleted(false);
+        applicantRepository.save(applicant);
 
-        return applicantRepository.save(applicant);
+        return ApplicantMapper.toResponseDto(applicant);
     }
 }
