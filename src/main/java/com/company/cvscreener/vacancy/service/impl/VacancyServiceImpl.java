@@ -5,6 +5,7 @@ import com.company.cvscreener.auth.repository.UserRepository;
 import com.company.cvscreener.vacancy.dto.VacancyRequestDTO;
 import com.company.cvscreener.vacancy.dto.VacancyResponseDTO;
 import com.company.cvscreener.vacancy.entity.Vacancy;
+import com.company.cvscreener.vacancy.mapper.VacancyMapper;
 import com.company.cvscreener.vacancy.repository.VacancyRepository;
 import com.company.cvscreener.vacancy.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -51,18 +52,14 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     public List<VacancyResponseDTO> findAll() {
-        List <Vacancy> vacancies = vacancyRepository.findAll();
-
-        List<VacancyResponseDTO> dtoList = new ArrayList<>();
-
-        for (Vacancy vacancy : vacancies) {
-            dtoList.add(toResponseDto(vacancy));
-        }
-        return dtoList;
+        return vacancyRepository.findAll().stream()
+                .map(VacancyMapper::toResponseDto)
+                .toList();
     }
 
-    public Vacancy findById(UUID id){
-        return vacancyRepository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new RuntimeException("Vacancy not found"));
+    public VacancyResponseDTO findById(UUID id){
+        Vacancy vacancy = vacancyRepository.findByIdAndActiveTrue(id).
+                orElseThrow(() -> new RuntimeException("Vacancy Not Found"));
+        return toResponseDto(vacancy);
     }
 }

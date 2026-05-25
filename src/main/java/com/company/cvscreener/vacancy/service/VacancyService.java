@@ -11,5 +11,5 @@ public interface VacancyService{
     VacancyResponseDTO create(VacancyRequestDTO dto);
     void delete(UUID id);
     List<VacancyResponseDTO> findAll();
-    Vacancy findById(UUID id);
+    VacancyResponseDTO findById(UUID id);
 }

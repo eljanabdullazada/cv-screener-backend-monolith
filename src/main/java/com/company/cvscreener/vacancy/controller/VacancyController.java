@@ -47,7 +47,7 @@ public class VacancyController {
 
     // ANY AUTHENTICATED USER
     @GetMapping("/{id}")
-    public ResponseEntity<Vacancy> findById(@PathVariable UUID id) {
+    public ResponseEntity<VacancyResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(vacancyService.findById(id));
     }
 
