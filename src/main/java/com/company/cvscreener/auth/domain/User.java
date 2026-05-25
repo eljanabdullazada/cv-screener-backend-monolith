@@ -36,6 +36,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = true;
 
     private LocalDateTime createdAt;

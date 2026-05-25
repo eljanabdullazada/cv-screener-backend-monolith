@@ -1,4 +1,5 @@
 package com.company.cvscreener.cv.scoring;
 
-public class CvScoringService {
+public interface CvScoringService {
+    public double calculateScore(String requirements, String cvText);
 }
