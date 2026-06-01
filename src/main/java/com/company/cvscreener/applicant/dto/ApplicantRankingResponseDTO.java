@@ -1,5 +1,7 @@
 package com.company.cvscreener.applicant.dto;
 
+import com.company.cvscreener.applicant.entity.ApplicationStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -9,6 +11,6 @@ public record ApplicantRankingResponseDTO(
         String username,
         String email,
         BigDecimal score,
-        String status,
+        ApplicationStatus status,
         LocalDateTime appliedAt
 ) {}

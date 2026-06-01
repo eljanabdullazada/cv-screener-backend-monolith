@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.company.cvscreener.applicant.entity.ApplicationStatus.APPROVED;
+import static com.company.cvscreener.applicant.entity.ApplicationStatus.REJECTED;
+
 @Service
 @RequiredArgsConstructor
 public class ApplicantServiceImpl implements ApplicantService {
@@ -29,24 +32,21 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     public ApplicantResponseDTO apply(UUID vacancyId, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found!"));
 
         Vacancy vacancy = vacancyRepository.findById(vacancyId)
-                .orElseThrow(() -> new RuntimeException("Vacancy not found"));
+                .orElseThrow(() -> new RuntimeException("Vacancy not found!"));
 
         if (!vacancy.getActive()) {
-            throw new RuntimeException("This vacancy is no longer active");
+            throw new RuntimeException("This vacancy is no longer active!");
         }
 
         applicantRepository.findByUserIdAndVacancyIdAndDeletedFalse(user.getId(), vacancyId)
                 .ifPresent(a -> {
-                    throw new RuntimeException("You have already applied for this vacancy");
+                    throw new RuntimeException("You have already applied for this vacancy!");
                 });
 
-        Applicant applicant = new Applicant();
-        applicant.setUser(user);
-        applicant.setVacancy(vacancy);
-        applicant.setDeleted(false);
+        Applicant applicant = ApplicantMapper.toEntity(user, vacancy);
         applicantRepository.save(applicant);
 
         return ApplicantMapper.toResponseDto(applicant);
@@ -56,5 +56,42 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional(readOnly = true)
     public List<ApplicantRankingResponseDTO> getApplicantRanking(UUID vacancyId) {
         return ApplicantMapper.toRankingResponseDtoList(applicantRepository.findAllByVacancyIdAndDeletedFalseOrderByScoreDesc(vacancyId));
+    }
+
+    @Override
+    @Transactional
+    public void approveApplication(UUID applicationId) {
+        Applicant applicant = applicantRepository.findById(applicationId).
+                orElseThrow(() -> new RuntimeException("Application not found with ID: " + applicationId));
+        if (applicant.getStatus() == APPROVED || Boolean.TRUE.equals(applicant.getDeleted())) {
+            throw new RuntimeException("This application is deleted or already approved!");
+        }
+        applicant.setStatus(APPROVED);
+    }
+
+    @Override
+    @Transactional
+    public void rejectApplication(UUID applicationId) {
+        Applicant applicant = applicantRepository.findById(applicationId).
+                orElseThrow(() -> new RuntimeException("Application not found!"));
+        if (applicant.getStatus() == REJECTED || Boolean.TRUE.equals(applicant.getDeleted())) {
+            throw new RuntimeException("This application is deleted or already rejected!");
+        }
+        applicant.setStatus(REJECTED);
+    }
+
+    @Override
+    @Transactional
+    public void deleteApplication(UUID applicationId) {
+        Applicant applicant = applicantRepository.findById(applicationId).
+                orElseThrow(() -> new RuntimeException("Application not found!"));
+        if (applicant.getStatus() == APPROVED) {
+            throw new RuntimeException("Approved applications cannot be deleted!");
+        }
+
+        if (Boolean.TRUE.equals(applicant.getDeleted())) {
+            throw new RuntimeException("Applications cannot be deleted twice!");
+        }
+        applicant.setDeleted(true);
     }
 }
