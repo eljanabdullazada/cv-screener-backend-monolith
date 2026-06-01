@@ -1,11 +1,10 @@
 package com.company.cvscreener.vacancy.controller;
 
+import com.company.cvscreener.applicant.dto.ApplicantRankingResponseDTO;
 import com.company.cvscreener.applicant.dto.ApplicantResponseDTO;
-import com.company.cvscreener.applicant.entity.Applicant;
 import com.company.cvscreener.applicant.service.ApplicantService;
 import com.company.cvscreener.vacancy.dto.VacancyRequestDTO;
 import com.company.cvscreener.vacancy.dto.VacancyResponseDTO;
-import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.service.VacancyService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +39,13 @@ public class VacancyController {
         vacancyService.delete(id);
     }
 
+    // HR ONLY
+    @PreAuthorize("hasRole('HR')")
+    @GetMapping("/{vacancyId}/ranking")
+    public ResponseEntity<List<ApplicantRankingResponseDTO>> getRanking(@PathVariable UUID vacancyId) {
+        return ResponseEntity.ok(applicantService.getApplicantRanking(vacancyId));
+    }
+
     // ANY AUTHENTICATED USER
     @GetMapping
     public List<VacancyResponseDTO> findAll() {
@@ -52,6 +58,7 @@ public class VacancyController {
         return ResponseEntity.ok(vacancyService.findById(id));
     }
 
+    // CANDIDATE ONLY
     @PreAuthorize("hasRole('CANDIDATE')")
     @PostMapping("/{id}/apply")
     public ResponseEntity<ApplicantResponseDTO> apply(

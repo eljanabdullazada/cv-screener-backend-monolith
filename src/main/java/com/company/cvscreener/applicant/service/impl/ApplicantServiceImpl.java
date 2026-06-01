@@ -1,8 +1,8 @@
 package com.company.cvscreener.applicant.service.impl;
 
+import com.company.cvscreener.applicant.dto.ApplicantRankingResponseDTO;
 import com.company.cvscreener.applicant.dto.ApplicantResponseDTO;
 import com.company.cvscreener.applicant.entity.Applicant;
-import com.company.cvscreener.applicant.entity.ApplicationStatus;
 import com.company.cvscreener.applicant.repository.ApplicantRepository;
 import com.company.cvscreener.applicant.service.ApplicantService;
 import com.company.cvscreener.auth.domain.User;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -50,5 +50,11 @@ public class ApplicantServiceImpl implements ApplicantService {
         applicantRepository.save(applicant);
 
         return ApplicantMapper.toResponseDto(applicant);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ApplicantRankingResponseDTO> getApplicantRanking(UUID vacancyId) {
+        return ApplicantMapper.toRankingResponseDtoList(applicantRepository.findAllByVacancyIdAndDeletedFalseOrderByScoreDesc(vacancyId));
     }
 }
