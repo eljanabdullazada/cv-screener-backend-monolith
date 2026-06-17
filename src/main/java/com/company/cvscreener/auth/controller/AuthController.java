@@ -4,6 +4,7 @@ import com.company.cvscreener.auth.dto.AuthResponse;
 import com.company.cvscreener.auth.dto.LoginRequest;
 import com.company.cvscreener.auth.dto.RegisterRequest;
 import com.company.cvscreener.auth.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
 
         String token = authenticationService.authenticate(
                 request.username(),
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegisterRequest request) {
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         String token = authenticationService.register(
                 request.username(),
                 request.email(),

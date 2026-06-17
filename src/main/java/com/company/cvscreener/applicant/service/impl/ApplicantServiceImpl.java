@@ -86,7 +86,7 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     public void deleteApplication(UUID applicationId) {
         Applicant applicant = applicantRepository.findById(applicationId).
-                orElseThrow(() -> new Res("Application not found!"));
+                orElseThrow(() -> new ResourceNotFoundException("Application not found!"));
         if (applicant.getStatus() == APPROVED) {
             throw new BusinessException("Approved applications cannot be deleted!");
         }
