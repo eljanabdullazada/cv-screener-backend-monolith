@@ -1,5 +1,6 @@
 package com.company.cvscreener.cv.storage.impl;
 
+import com.company.cvscreener.common.exception.BusinessException;
 import com.company.cvscreener.cv.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             return filePath.toString();
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to store CV file", e);
+            throw new BusinessException("Failed to store CV file", e);
         }
 
     }

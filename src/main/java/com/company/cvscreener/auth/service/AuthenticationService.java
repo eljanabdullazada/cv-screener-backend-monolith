@@ -5,6 +5,7 @@ import com.company.cvscreener.auth.domain.User;
 import com.company.cvscreener.auth.repository.RoleRepository;
 import com.company.cvscreener.auth.repository.UserRepository;
 import com.company.cvscreener.auth.security.JwtService;
+import com.company.cvscreener.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,7 +54,7 @@ public class AuthenticationService {
 
         Role candidateRole = roleRepository
                 .findByName("CANDIDATE")
-                .orElseThrow(() -> new RuntimeException("Error: Role 'CANDIDATE' not found in database."));
+                .orElseThrow(() -> new ResourceNotFoundException("Error: Role 'CANDIDATE' not found in database."));
 
         User user = User.builder()
                 .username(username)
@@ -74,10 +75,10 @@ public class AuthenticationService {
 
     public void updateUserRole(String username, String roleName) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Error: User not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Error: User not found."));
 
         Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RuntimeException("Error: Role '" + roleName + "' not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Error: Role '" + roleName + "' not found."));
 
 //        user.setRoles(Set.of(role)); now using this because it does not allow editing the role due to being immutable
         user.setRoles(new HashSet<>(List.of(role)));

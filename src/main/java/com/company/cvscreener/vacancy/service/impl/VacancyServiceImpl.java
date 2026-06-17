@@ -2,6 +2,7 @@ package com.company.cvscreener.vacancy.service.impl;
 
 import com.company.cvscreener.auth.domain.User;
 import com.company.cvscreener.auth.repository.UserRepository;
+import com.company.cvscreener.common.exception.ResourceNotFoundException;
 import com.company.cvscreener.vacancy.dto.VacancyRequestDTO;
 import com.company.cvscreener.vacancy.dto.VacancyResponseDTO;
 import com.company.cvscreener.vacancy.entity.Vacancy;
@@ -39,7 +40,7 @@ public class VacancyServiceImpl implements VacancyService {
         String hrUsername = authentication.getName();
 
         User user = userRepository.findByUsername(hrUsername)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Vacancy vacancy = toEntity(dto, user);
         vacancyRepository.save(vacancy);
 
@@ -58,7 +59,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     public VacancyResponseDTO findById(UUID id){
         Vacancy vacancy = vacancyRepository.findByIdAndActiveTrue(id).
-                orElseThrow(() -> new RuntimeException("Vacancy Not Found"));
+                orElseThrow(() -> new ResourceNotFoundException("Vacancy Not Found"));
         return toResponseDto(vacancy);
     }
 }

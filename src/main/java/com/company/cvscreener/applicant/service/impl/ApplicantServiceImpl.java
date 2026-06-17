@@ -7,6 +7,8 @@ import com.company.cvscreener.applicant.repository.ApplicantRepository;
 import com.company.cvscreener.applicant.service.ApplicantService;
 import com.company.cvscreener.auth.domain.User;
 import com.company.cvscreener.auth.repository.UserRepository;
+import com.company.cvscreener.common.exception.BusinessException;
+import com.company.cvscreener.common.exception.ResourceNotFoundException;
 import com.company.cvscreener.vacancy.entity.Vacancy;
 import com.company.cvscreener.vacancy.repository.VacancyRepository;
 import com.company.cvscreener.applicant.mapper.ApplicantMapper;
@@ -32,18 +34,18 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     public ApplicantResponseDTO apply(UUID vacancyId, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         Vacancy vacancy = vacancyRepository.findById(vacancyId)
-                .orElseThrow(() -> new RuntimeException("Vacancy not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vacancy not found!"));
 
         if (!vacancy.getActive()) {
-            throw new RuntimeException("This vacancy is no longer active!");
+            throw new BusinessException("This vacancy is no longer active!");
         }
 
         applicantRepository.findByUserIdAndVacancyIdAndDeletedFalse(user.getId(), vacancyId)
                 .ifPresent(a -> {
-                    throw new RuntimeException("You have already applied for this vacancy!");
+                    throw new BusinessException("You have already applied for this vacancy!");
                 });
 
         Applicant applicant = ApplicantMapper.toEntity(user, vacancy);
@@ -62,9 +64,9 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     public void approveApplication(UUID applicationId) {
         Applicant applicant = applicantRepository.findById(applicationId).
-                orElseThrow(() -> new RuntimeException("Application not found with ID: " + applicationId));
+                orElseThrow(() -> new ResourceNotFoundException("Application not found with ID: " + applicationId));
         if (applicant.getStatus() == APPROVED || Boolean.TRUE.equals(applicant.getDeleted())) {
-            throw new RuntimeException("This application is deleted or already approved!");
+            throw new BusinessException("This application is deleted or already approved!");
         }
         applicant.setStatus(APPROVED);
     }
@@ -73,9 +75,9 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     public void rejectApplication(UUID applicationId) {
         Applicant applicant = applicantRepository.findById(applicationId).
-                orElseThrow(() -> new RuntimeException("Application not found!"));
+                orElseThrow(() -> new ResourceNotFoundException("Application not found!"));
         if (applicant.getStatus() == REJECTED || Boolean.TRUE.equals(applicant.getDeleted())) {
-            throw new RuntimeException("This application is deleted or already rejected!");
+            throw new BusinessException("This application is deleted or already rejected!");
         }
         applicant.setStatus(REJECTED);
     }
@@ -84,13 +86,13 @@ public class ApplicantServiceImpl implements ApplicantService {
     @Transactional
     public void deleteApplication(UUID applicationId) {
         Applicant applicant = applicantRepository.findById(applicationId).
-                orElseThrow(() -> new RuntimeException("Application not found!"));
+                orElseThrow(() -> new Res("Application not found!"));
         if (applicant.getStatus() == APPROVED) {
-            throw new RuntimeException("Approved applications cannot be deleted!");
+            throw new BusinessException("Approved applications cannot be deleted!");
         }
 
         if (Boolean.TRUE.equals(applicant.getDeleted())) {
-            throw new RuntimeException("Applications cannot be deleted twice!");
+            throw new BusinessException("Applications cannot be deleted twice!");
         }
         applicant.setDeleted(true);
     }

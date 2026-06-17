@@ -2,6 +2,7 @@ package com.company.cvscreener.cv.service.impl;
 
 import com.company.cvscreener.applicant.entity.Applicant;
 import com.company.cvscreener.applicant.repository.ApplicantRepository;
+import com.company.cvscreener.common.exception.ResourceNotFoundException;
 import com.company.cvscreener.cv.extractor.PdfTextExtractor;
 import com.company.cvscreener.cv.mongo.CvDocument;
 import com.company.cvscreener.cv.mongo.CvMongoRepository;
@@ -30,7 +31,7 @@ public class CvServiceImpl implements CvService {
     public void uploadCv(UUID applicationId, MultipartFile file) {
 
         Applicant applicant = applicantRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
 
         String filePath = fileStorageService.saveCv(applicationId, file);
 

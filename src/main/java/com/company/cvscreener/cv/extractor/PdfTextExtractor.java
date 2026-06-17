@@ -1,5 +1,6 @@
 package com.company.cvscreener.cv.extractor;
 
+import com.company.cvscreener.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -24,7 +25,7 @@ public class PdfTextExtractor {
 
             log.error("Failed to extract text from CV {}", filePath);
 
-            throw new RuntimeException("Could not read CV file", e);
+            throw new BusinessException("Could not read CV file", e);
         }
     }
 }
