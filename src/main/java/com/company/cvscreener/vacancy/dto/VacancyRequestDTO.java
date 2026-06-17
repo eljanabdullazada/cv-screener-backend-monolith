@@ -1,12 +1,18 @@
 package com.company.cvscreener.vacancy.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record VacancyRequestDTO(
-        @NotNull(message = "Title of the vacancy cannot be null.")
-        String title,
-        @NotNull(message = "Description of the vacancy cannot be null.")
-        String description,
-        @NotNull(message = "Requirements of the vacancy cannot be null.")
-        String requirements
+
+      @NotBlank(message = "Title cannot be blank.")
+      @Size(max = 255, message = "Title cannot exceed 255 characters.")
+      String title,
+
+      @NotBlank(message = "Description cannot be blank.")
+      String description,
+
+      @NotBlank(message = "Requirements cannot be blank.")
+      String requirements
+
 ) {}

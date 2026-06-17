@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -48,6 +49,28 @@ public class GlobalExceptionHandler {
           LocalDateTime.now()
     );
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ApiResponse> handleValidationException(
+        MethodArgumentNotValidException e
+  ) {
+
+    String message = e.getBindingResult()
+          .getFieldErrors()
+          .stream()
+          .findFirst()
+          .map(error -> error.getDefaultMessage())
+          .orElse("Validation failed");
+
+    ApiResponse response = new ApiResponse(
+          false,
+          422,
+          message,
+          LocalDateTime.now()
+    );
+
+    return ResponseEntity.badRequest().body(response);
   }
 
 }
